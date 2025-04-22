@@ -7,6 +7,11 @@ class Bank {
 
     // Add methods here:
     // Example: createAccount(name, initialDeposit)
+    createAccount(name, initialDeposit){
+        const newAccount = new Account(name, initialDeposit);
+        this.accounts.push(newAccount);
+        return newAccount;
+    }
 
 }
 
@@ -22,15 +27,61 @@ class Account {
     // Example: deposit(amount) 
     // example data to be stored in transactionHistory { transactionType: 'Deposit', amount: 500 }
 
+    deposit(amount){
+        if(amount <= 0) {
+            console.log("Deposit must be greater than zero.");
+            return;
+        }
+        this.balance += amount;
+        this.transactionHistory.push({transactionType: "Deposit", amount: amount});
+    }
+
     // Example: withdraw(amount)
     // example data to be stored in transactionHistory { transactionType: 'Withdrawal', amount: 200 }
+
+    withdraw(amount){
+        if(amount <= 0){
+            console.log("Withdrawal must be greater than zero.");
+            return;
+        }
+        if(amount > this.balance){
+            console.log("Not enough balance.");
+            return;
+        }
+        this.balance -= amount;
+        this.transactionHistory.push({transactionType: "Withdrawal", amount: amount});
+    }
 
     // Example: transfer(amount, recipientAccount)
     // example data to be stored in transactionHistory:
     // for account sending { transactionType: 'Transfer', amount: 300, to: recipientName }
     // for account recieving { transactionType: 'Received', amount: 300, from: senderName }
+
+    transfer(amount, recipientAccount){
+        if(!recipientAccount || !recipientAccount.name || recipientAccount.balance == null){
+            console.log("Recipient must be a valid account.");
+            return;
+        }
+        if(amount <= 0){
+            console.log("Transfer must be greater than zero.");
+            return;
+        }
+        if(amount > this.balance){
+            console.log("Not enough balance to transfer");
+            return;
+        }
+        this.balance -= amount;
+        recipientAccount.balance += amount;
+
+        this.transactionHistory.push({transactionType: "Transfer", amount: amount, to: recipientAccount.name});
+
+        recipientAccount.transactionHistory.push({transactionType: "Received", amount: amount, from: this.name});
+    }
     
     // Example: checkBalance()
+    checkBalance() {
+        return this.balance;
+    }
 }
 
 //<-------------------------------DO NOT WRITE BELOW THIS LINE------------------------------>
